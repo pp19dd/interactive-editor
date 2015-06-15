@@ -9,3 +9,6 @@ renderers_dev
 renderers_dev/*
 renderers
 renderers/*
+composer.lock
+vendor
+vendor/*
