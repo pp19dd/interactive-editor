@@ -1,0 +1,11 @@
+wordpress
+wordpress/*
+config.php
+templates_c
+templates_c/*
+_old
+_old/*
+renderers_dev
+renderers_dev/*
+renderers
+renderers/*
