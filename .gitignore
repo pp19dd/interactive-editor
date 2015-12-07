@@ -14,3 +14,12 @@ vendor
 vendor/*
 node_modules
 node_modules/*
+*.exe
+*.rdb
+npm.cmd
+supervisor
+supervisor.cmd
+node-supervisor
+node-supervisor.cmd
+node-debug
+node-debug.cmd
