@@ -7,6 +7,17 @@ $app->db = null;
 $app->smarty = null;
 $app->klein = null;
 
+if(
+    !defined('MYSQL_HOSTNAME') ||
+    !defined('MYSQL_DATABASE') ||
+    !defined('MYSQL_USERNAME') ||
+    !defined('MYSQL_PASSWORD') ||
+    !defined('HOME') ||
+    !defined('URL')
+) {
+    die( "ERROR: please check config.php for MySQL settings" );
+}
+
 try {
     $app->db = new PDO(
         'mysql:host=' . MYSQL_HOSTNAME .
@@ -28,18 +39,14 @@ $app->smarty = new Smarty();
 $app->klein->respond('GET', HOME.'/', function() use ($app) {
     try {
         $query = $app->db->prepare(
-            "select timelines.*,(
-            select *
-            from wp_postmeta
-            where timelines.PID=wp_postmeta.post_id and
-            wp_postmeta.meta_key='_timeline_copyid'
-            ) as _copyid from timelines"
+            "select * from timelines"
         );
         $query->execute();
         $timelines = $query->fetchAll(\PDO::FETCH_OBJ);
     } catch( Exception $e ) {
         die( "ERROR: unable to query timelines" );
     }
+    $app->smarty->assign( "home", URL );
     $app->smarty->assign("timelines", $timelines);
     return( $app->smarty->fetch("timelines.tpl") );
 });

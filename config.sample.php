@@ -2,6 +2,7 @@
 
 // no trailing slash
 define( "HOME", "/interactive-editor" );
+define( "URL", "http://localhost/interactive-editor" );
 
 define( "MYSQL_HOSTNAME", "localhost" );
 define( "MYSQL_USERNAME", "username" );
