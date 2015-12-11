@@ -23,3 +23,4 @@ node-supervisor
 node-supervisor.cmd
 node-debug
 node-debug.cmd
+renderers/*

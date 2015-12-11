@@ -4,88 +4,120 @@
 <title>timeline #</title>
 <meta charset="utf-8" />
 <link rel="stylesheet" type="text/css" href="{$home}/css/html5-reset.css" />
-<style>
-
-table { border-collapse: collapse; width:100% }
-td { padding: 5px; padding-right: 3em; }
-.odd { }
-.even { background-color: rgb(230,230,230); }
-
-.hg {
+<style type="text/css">
+body, html {
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+body {
+    width:auto;
     display: flex;
-    min-height:100vh;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    height:100%;
+    font-family: Helvetica,Arial,sans-serif;
 }
-
-header {
-    flex: 1 0 10%;
-    background-color: yellow;
-    height:100px;
-    position: fixed;
+content {
+    background-color: silver;
+    width:100%;
 }
-
-hgbody {
-    display: flex;
-    flex: 1;
-}
-
-hgcontents {
-    flex: 1;
-    background-color: gray;
-}
-
 slides {
-    background-color: red;
-    flex: 0 0 300px;
     order: -1;
-    display: flex;
-    flex-direction: column;
+    background-color: orange;
+    xmin-width:250px;
+    flex :0 0 250px;
+}
+slide {
+    xpadding:1em;
+}
+actions {
+    background-color: yellow;
+    xin-width:250px;
+    flex :0 0 250px;
+}
+upper {
+    xborder: 3px dotted gray;
 }
 
+upper,lower {
+    display: flex;
+    flex-direction: column;
+    flex-wrap:stretch;
+    overflow-y: auto;
+    justify-content: center;
+    align-items: stretch;
+}
 slide {
     flex: 1;
-
 }
-
-actions {
-    background-color: silver;
-    flex: 0 0 200px;
+lower {
+    overflow-y: auto;
+    flex:2;
 }
-
 </style>
 </head>
-<body class="hg">
-    <hgbody>
-        <hgcontents>
-ac
+<body>
+    <content>
+        <upper>
+            <post-field>
+                <post-field-label>Title</post-field-label>
+                <post-input><input name="title" type="text" /></post-input>
+            </post-field>
+
+            <post-field>
+                <post-field-label>Slug</post-field-label>
+                <post-input><input name="slug" type="text" /></post-input>
+            </post-field>
+        </upper>
+        <lower>
+
+{for $x = 1 to 500}
+    This is a sentence # {$x}.
+{/for}
+
 {*
-            timelines:
-            <table>
-{for $x = 1 to 50}
+        timelines:
+        <table>
+
 {foreach from=$timelines item=timeline}
-                <tr class="{cycle values='odd,even'}">
-                    <td><pid>{$timeline->id}</pid/></td>
-                    <td><posted>{$timeline->created_on}</posted/></td>
-                    <td><headline>{$timeline->title}</headline></td>
-                </tr>
+            <tr class="{cycle values='odd,even'}">
+                <td><pid>{$timeline->id}</pid/></td>
+                <td><posted>{$timeline->created_on}</posted/></td>
+                <td><headline>{$timeline->title}</headline></td>
+            </tr>
 {/foreach}
 {/for}
-            </table>
+        </table>
 *}
-        </hgcontents>
-        <slides>
-            <header>
-                interactive-editor
-            </header>
-            slides
-
-{for $x = 1 to 50}
-                <slide>slide #{$x}</slide>
+        </lower>
+    </content>
+    <slides>
+        <upper>
+            interactive-editor
+        </upper>
+        <lower>
+{for $x = 1 to 75}
+        <slide>slide #{$x}</slide>
 {/for}
-        </slides>
-        <actions>
-            actions
-        </actions>
-    </hgbody>
+        </lower>
+    </slides>
+    <actions>
+        <upper>
+            [save]<br/>
+            [cancel]
+        </upper>
+        <lower>
+{for $x = 1 to 35}
+            <action>
+                action #{$x}
+            </action>
+{/for}
+        </lower>
+    </actions>
 </body>
 </html>

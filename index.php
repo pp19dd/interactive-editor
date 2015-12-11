@@ -51,4 +51,12 @@ $app->klein->respond('GET', HOME.'/', function() use ($app) {
     return( $app->smarty->fetch("timelines.tpl") );
 });
 
+$app->klein->respond('GET', HOME.'/preview/[i:id]', function($req, $res, $svc, $app) use ($app) {
+    # echo $req->id; die;
+    # $app->smarty->assign("id", $req->id)
+    # return( $app->smarty->fetch("preview.tpl") );
+    ### $renderer = new interactive();
+    ### $renderer->setTimelineid($req->id);
+});
+
 $app->klein->dispatch();
