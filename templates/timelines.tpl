@@ -25,11 +25,20 @@ body {
 content {
     background-color: silver;
     width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
 }
 slides {
     order: -1;
     background-color: orange;
-    xmin-width:250px;
+
+}
+slides, actions {
+
+    display: flex;
+    flex-direction: column;
+
     flex :0 0 250px;
 }
 slide {
@@ -40,24 +49,16 @@ actions {
     xin-width:250px;
     flex :0 0 250px;
 }
-upper {
-    xborder: 3px dotted gray;
-}
 
 upper,lower {
-    display: flex;
-    flex-direction: column;
-    flex-wrap:stretch;
-    overflow-y: auto;
-    justify-content: center;
-    align-items: stretch;
 }
 slide {
-    flex: 1;
+
+}
+upper {
 }
 lower {
     overflow-y: auto;
-    flex:2;
 }
 </style>
 </head>
@@ -98,11 +99,12 @@ lower {
     </content>
     <slides>
         <upper>
-            interactive-editor
+            <p>interactive-editor</p>
+            <p><button>save</button></p>
         </upper>
         <lower>
 {for $x = 1 to 75}
-        <slide>slide #{$x}</slide>
+        <p>slide #{$x}</p>
 {/for}
         </lower>
     </slides>
@@ -114,7 +116,7 @@ lower {
         <lower>
 {for $x = 1 to 35}
             <action>
-                action #{$x}
+                <p>action #{$x}</p>
             </action>
 {/for}
         </lower>

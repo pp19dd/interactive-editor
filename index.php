@@ -36,6 +36,10 @@ try {
 $app->klein = new \Klein\Klein();
 $app->smarty = new Smarty();
 
+$app->klein->respond('GET', HOME.'/test', function() use ($app) {
+    return( $app->smarty->fetch("bla.tpl") );
+
+});
 $app->klein->respond('GET', HOME.'/', function() use ($app) {
     try {
         $query = $app->db->prepare(
