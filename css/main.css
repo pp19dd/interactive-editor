@@ -1,0 +1,60 @@
+body, html {
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+body {
+    width:auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    height:100%;
+    font-family: Helvetica,Arial,sans-serif;
+}
+content {
+    background-color: silver;
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+}
+slides {
+    order: -1;
+    background-color: orange;
+
+}
+slides, actions {
+    display: flex;
+    flex-direction: column;
+
+    flex :0 0 250px;
+}
+actions {
+    background-color: yellow;
+    xin-width:250px;
+    flex :0 0 250px;
+}
+
+upper,lower { display: flex; flex-direction: column }
+slide,action {
+    padding: 0.33em;
+    flex: auto;
+    border:1px solid gray;
+}
+upper { }
+lower { overflow-y: auto; }
+slides *, actions *, upper * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+upper.editor, lower.editor {
+    padding:1em;
+}
