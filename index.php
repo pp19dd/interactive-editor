@@ -39,7 +39,7 @@ $app->smarty = new Smarty();
 $app->klein->respond('GET', HOME.'/', function() use ($app) {
     try {
         $query = $app->db->prepare(
-            "select * from timelines"
+            "select * from timelines where status='published' order by parent,id"
         );
         $query->execute();
         $timelines = $query->fetchAll(\PDO::FETCH_OBJ);
@@ -51,12 +51,24 @@ $app->klein->respond('GET', HOME.'/', function() use ($app) {
     return( $app->smarty->fetch("timelines.tpl") );
 });
 
-$app->klein->respond('GET', HOME.'/preview/[i:id]', function($req, $res, $svc, $app) use ($app) {
-    # echo $req->id; die;
-    # $app->smarty->assign("id", $req->id)
-    # return( $app->smarty->fetch("preview.tpl") );
-    ### $renderer = new interactive();
-    ### $renderer->setTimelineid($req->id);
+$app->klein->respond('GET', HOME.'/interactive/[i:id]', function($req, $res, $svc, $app) use ($app) {
+    try {
+        $query = $app->db->prepare(
+            "select * from timelines where id=:id"
+        );
+        $query->execute(array(
+            "id" => $req->id
+        ));
+        $timeline = $query->fetch(\PDO::FETCH_OBJ);
+    } catch( Exception $e ) {
+        die( "ERROR: unable to query timeline" );
+    }
+
+    if( empty($timeline) ) throw new Exception("Timeline {$req->id} is empty");
+
+    $app->smarty->assign( "home", URL );
+    $app->smarty->assign("timeline", $timeline);
+    return( $app->smarty->fetch("timeline.tpl") );
 });
 
 $app->klein->dispatch();
