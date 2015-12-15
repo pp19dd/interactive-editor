@@ -7,8 +7,6 @@
 {block name="head"}
 <style>
 actions { display: none }
-logo h1 { font-size:2em; color: gray }
-logo { padding: 1em }
 </style>
 {/block}
 
@@ -24,8 +22,19 @@ logo { padding: 1em }
 
 {block name="slides"}
 <upper>
-    <button>Create New Interactive</button>
+    <logo>
+        <h1>
+            &nbsp;
+        </h1>
+    </logo>
 </upper>
+<lower>
+    <sidebar-menu>
+        <a class="create-new" href="{$home}/new">
+            Create New Interactive
+        </a>
+    </sidebar-menu>
+</lower>
 {/block}
 
 {block name="content"}
@@ -38,16 +47,17 @@ logo { padding: 1em }
 <table class="timelines">
 
 {foreach from=$timelines item=timeline}
-{for $x = 1 to 75}
     <tr class="{cycle values='odd,even'}">
         <td><pid>{$timeline->id}</pid/></td>
         <td><posted>{$timeline->created_on}</posted/></td>
         <td><headline>{$timeline->title}</headline></td>
         <td>
+            <a href="{$home}/config/{$timeline->id}">Config</a>
+        </td>
+        <td>
             <a href="{$home}/interactive/{$timeline->id}">Edit</a>
         </td>
     </tr>
-{/for}
 {/foreach}
 </table>
 </lower>

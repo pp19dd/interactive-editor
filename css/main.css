@@ -1,3 +1,4 @@
+/* using flexbox for 3-col layout */
 body, html {
     width:100%;
     height:100%;
@@ -54,9 +55,53 @@ upper.editor, lower.editor {
     padding:1em;
 }
 
+slides {
+    background: #dddddd;
+}
+
+content {
+    background: #ffffff;
+}
+
+actions {
+    background-color: #dddddd;
+}
+
+logo h1 { font-size:2em; color: gray }
+logo { padding: 1em }
+sidebar-menu { padding: 1em }
+
+/* general guides */
+a { color: #0074d9 }
+
 /* main screen */
-.timelines { }
+.timelines table { width:100% }
 .timelines th, .timelines td { padding:0.5em }
 .timelines th { }
 .timelines td { }
 .timelines .odd { background-color: ghostwhite }
+
+.timelines .create-new {  }
+
+/* configuring a timeline */
+.config table { width: 100% }
+.config th, .config td { padding:0.5em }
+.config th { }
+.config td { }
+.config .odd { background-color: ghostwhite }
+.config input { width: 100% }
+.config .field_key { width: 100px }
+.config .field_value { }
+
+
+
+/* editing a timeline */
+.timeline interactive { padding:1em }
+.timeline interactive h1, interactive h2 { font-size: 1em; }
+.timeline interactive h1 { font-weight: bold }
+.timeline interactive h2 { font-size:0.75em; }
+
+.timeline post-field { display: flex; flex-direction: row; align-items: stretch;}
+.timeline post-field-label { flex: 0 0 50px; font-weight: bold; font-size:1em; }
+.timeline post-input { flex: auto; width:100% }
+.timeline post-input input { width:100% }
