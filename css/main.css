@@ -92,8 +92,18 @@ a { color: #0074d9 }
 .config input { width: 100% }
 .config .field_key { width: 100px }
 .config .field_value { }
-
-
+.config .add-field { padding:1em }
+.config .remove-field {
+    text-decoration: none;
+    border:1px solid #ffdc00;
+    width:20px;
+    border-radius: 10px;
+    display:block;
+    text-align: center;
+    background-color: #ffdc00;
+    color: black;
+}
+.config .to-be-deleted input { text-decoration: line-through }
 
 /* editing a timeline */
 .timeline interactive { padding:1em }

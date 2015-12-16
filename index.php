@@ -79,9 +79,22 @@ $app->klein->respond('GET', HOME.'/config/[i:id]', function($req, $res, $svc, $a
         die( "ERROR: unable to query config for timeline" );
     }
 
+    try {
+        $query = $app->db->prepare(
+            "select * from meta where timeline_id=:id and status='published' order by `order_num`"
+        );
+        $query->execute(array(
+            "id" => $req->id
+        ));
+        $meta = $query->fetchAll(\PDO::FETCH_OBJ);
+    } catch( Exception $e ) {
+        die( "ERROR: unable to query meta for timeline" );
+    }
+
     $app->smarty->assign( "home", URL );
     $app->smarty->assign( "timeline", $timeline );
     $app->smarty->assign( "config", $config );
+    $app->smarty->assign( "meta", $meta );
     $app->smarty->assign( "page", "config" );
     return( $app->smarty->fetch("config.tpl") );
 });
