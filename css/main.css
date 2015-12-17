@@ -67,9 +67,14 @@ actions {
     background-color: #dddddd;
 }
 
-logo h1 { font-size:2em; color: gray }
-logo { padding: 1em }
+h1 { font-size:2em; color: gray }
+logo { }
 sidebar-menu { padding: 1em }
+ul { list-style: disc inside }
+li { line-height: 1.5em }
+
+pad { padding: 1em }
+notes { display: block; margin-top: 2em }
 
 /* general guides */
 a { color: #0074d9 }
@@ -104,6 +109,10 @@ a { color: #0074d9 }
     color: black;
 }
 .config .to-be-deleted input { text-decoration: line-through }
+.config button {
+    padding:2em;
+    width: 100%;
+}
 
 /* editing a timeline */
 .timeline interactive { padding:1em }

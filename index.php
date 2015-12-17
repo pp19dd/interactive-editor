@@ -115,6 +115,14 @@ $app->klein->respond('GET', HOME.'/', function() use ($app) {
     return( $app->smarty->fetch("timelines.tpl") );
 });
 
+$app->klein->respond('POST', HOME.'/save/config/[i:id]', function($req, $res, $svc, $app) use ($app) {
+    $ret = array();
+    $ret["status"] = "fail";
+
+    return( json_encode($ret) );
+    die;
+});
+
 $app->klein->respond('POST', HOME.'/interactive/[i:id]/slides', function($req, $res, $svc, $app) use ($app) {
 die("slides");
 });

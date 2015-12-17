@@ -24,16 +24,21 @@ $("#add_field").click(function() {
     return(false);
 });
 
+$("#save_timeline_config").click(function() {
+    save_config( {$timeline->id}, this );
+    return(false);
+});
+
 </script>
 {/block}
 
 {block name="slides"}
 <upper>
-    <logo>
+    <pad>
         <h1>
             &nbsp;
         </h1>
-    </logo>
+    </pad>
 </upper>
 <lower>
     <sidebar-menu>
@@ -46,24 +51,25 @@ $("#add_field").click(function() {
 
 {block name="actions"}
 <upper>
-    <logo>
+    <pad>
         <h1>
             &nbsp;
         </h1>
-    </logo>
+    </pad>
 </upper>
 <lower>
     <sidebar-menu>
-        <button>Save</button>
+        <button id="save_timeline_config">Save Timeline Config</button>
     </sidebar-menu>
+    <pre id="debug"></pre>
 </lower>
 {/block}
 
 {block name="content"}
 <upper>
-    <logo>
+    <pad>
         <h1>Interactive</h1>
-    </logo>
+    </pad>
 </upper>
 <lower>
 
@@ -91,9 +97,9 @@ $("#add_field").click(function() {
 {row label="Template" key="template" value=$timeline->template}
 </table>
 
-<logo>
+<pad>
     <h1>Slide Fields</h1>
-</logo>
+</pad>
 
 <table class="timeline_meta" id="timeline_meta">
     <thead>
@@ -110,8 +116,17 @@ $("#add_field").click(function() {
     </tbody>
 </table>
 
+<p><a id="add_field" class="add-field" href="">+ Add Field</a></p>
 
-<a id="add_field" class="add-field" href="">+ Add Field</a>
+<pad>
+    <notes>
+        <p>Notes:</p>
+        <ul>
+            <li>Dropdown, Radio: enter possible values separated by a comma.</li>
+            <li>Checkbox: leave possible values blank, default value can be blank (unchecked) or any text (checked).</li>
+        </ul>
+    </notes>
+</pad>
 
 </lower>
 {/block}

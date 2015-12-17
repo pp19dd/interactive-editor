@@ -125,13 +125,19 @@ function add_meta_field(options) {
 // ===========================================================================
 // glue this to the save config button / link
 // ===========================================================================
-function save_config(id) {
+function save_config(id, button) {
+    $(button).attr("disabled", true);
     $.post(
         home + "/save/config/" + parseInt(id),
-        {},
+        {
+            id: id
+        },
         function(d) {
-            $("slides lower").html(d);
-        }
+            console.clear(); console.dir( d );
+            $("#debug").html(d);
+            $(button).attr("disabled", false);
+        },
+        "json"
     );
 
 }
