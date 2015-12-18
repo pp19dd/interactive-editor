@@ -11,7 +11,6 @@ class slide {
     public $slug;
     public $order;
 
-    public published_info $keks;
 }
 
 class interactive {

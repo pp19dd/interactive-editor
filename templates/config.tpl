@@ -61,7 +61,6 @@ $("#save_timeline_config").click(function() {
     <sidebar-menu>
         <button id="save_timeline_config">Save Timeline Config</button>
     </sidebar-menu>
-    <pre id="debug"></pre>
 </lower>
 {/block}
 
@@ -105,6 +104,7 @@ $("#save_timeline_config").click(function() {
     <thead>
         <tr>
             <th>Series</th>
+            <th>Position</th>
             <th>Label</th>
             <th>Template Symbol</th>
             <th>Type</th>

@@ -1,6 +1,9 @@
 <?php
+define( "APP_RUNNING", true );
 require("vendor/autoload.php");
 require("config.php");
+require("class.render.php");
+require("class.query.php");
 
 $app = new stdClass();
 $app->db = null;
@@ -39,7 +42,7 @@ $app->smarty = new Smarty();
 $app->klein->respond('GET', HOME.'/new', function() use ($app) {
     try {
         $query = $app->db->prepare(
-            "insert into timelines (title, created_on, status) " .
+            "insert into `timelines` (`title`, `created_on`, `status`) " .
             "values ('Untitled', now(), 'deleted')"
         );
         $query->execute();
@@ -55,7 +58,7 @@ $app->klein->respond('GET', HOME.'/new', function() use ($app) {
 $app->klein->respond('GET', HOME.'/config/[i:id]', function($req, $res, $svc, $app) use ($app) {
     try {
         $query = $app->db->prepare(
-            "select * from timelines where id=:id limit 1"
+            "select * from `timelines` where `id`=:id limit 1"
         );
         $query->execute(array(
             "id" => $req->id
@@ -69,7 +72,7 @@ $app->klein->respond('GET', HOME.'/config/[i:id]', function($req, $res, $svc, $a
 
     try {
         $query = $app->db->prepare(
-            "select * from config where timeline_id=:id and status='published'"
+            "select * from `config` where `timeline_id`=:id and `status`='published'"
         );
         $query->execute(array(
             "id" => $req->id
@@ -81,7 +84,7 @@ $app->klein->respond('GET', HOME.'/config/[i:id]', function($req, $res, $svc, $a
 
     try {
         $query = $app->db->prepare(
-            "select * from meta where timeline_id=:id and status='published' order by `order_num`"
+            "select * from `meta` where `timeline_id`=:id and `status`='published' order by `order_num`"
         );
         $query->execute(array(
             "id" => $req->id
@@ -102,7 +105,7 @@ $app->klein->respond('GET', HOME.'/config/[i:id]', function($req, $res, $svc, $a
 $app->klein->respond('GET', HOME.'/', function() use ($app) {
     try {
         $query = $app->db->prepare(
-            "select * from timelines where status='published' order by parent,id"
+            "select * from `timelines` where `status`='published' order by `parent`,`id`"
         );
         $query->execute();
         $timelines = $query->fetchAll(\PDO::FETCH_OBJ);
@@ -117,7 +120,69 @@ $app->klein->respond('GET', HOME.'/', function() use ($app) {
 
 $app->klein->respond('POST', HOME.'/save/config/[i:id]', function($req, $res, $svc, $app) use ($app) {
     $ret = array();
-    $ret["status"] = "fail";
+
+    try {
+        $query = $app->db->prepare(
+            "update `timelines` " .
+            "set `title`=:title, `subtitle`=:subtitle, `status`=:status, " .
+            "`template`=:template " .
+            "where `id`=:id limit 1"
+        );
+        $query->execute(array(
+            "title" => $req->title,
+            "subtitle" => $req->subtitle,
+            "template" => $req->template,
+            "status" => "published",
+            "id" => $req->id
+        ));
+    } catch( Exception $e ) {
+        die( "ERROR: unable to update timeline" );
+    }
+
+    try {
+        $query = $app->db->prepare(
+            "update `meta` set status='deleted' where " .
+            "`status`='published' and `timeline_id`=:id"
+        );
+        $query->execute(array(
+            "id" => $req->id
+        ));
+    } catch( Exception $e ) {
+        die( "ERROR: unable to delete meta fields" );
+    }
+
+    foreach( $req->meta as $count => $field ) {
+        if( $field["is_deleted"] == "true" ) continue;
+
+        try {
+            $query = $app->db->prepare(
+                "insert into meta (timeline_id, order_num, series, position, label, " .
+                " symbol, type, possible_values, default_value) values (" .
+                ":id, :order, :series, :position, :label, :symbol, :type, :possible, :default)"
+            );
+            $query->execute(array(
+                "id" => $req->id,
+                "order" => $count,
+                "series" => $field["series"],
+                "position" => $field["position"],
+                "label" => $field["label"],
+                "symbol" => $field["symbol"],
+                "type" => $field["type"],
+                "possible" => $field["possible"],
+                "default" => $field["default"]
+            ));
+        } catch( Exception $e ) {
+            die( "ERROR: unable to delete meta fields" );
+        }
+    }
+
+    //
+    // $ret["id"] = $req->id;
+    // $ret["status"] = "fail";
+    // $ret["title"] = $req->title;
+    // $ret["subtitle"] = $req->subtitle;
+    // $ret["template"] = $req->template;
+    #$ret["meta"] = print_r($req->meta[0],true);
 
     return( json_encode($ret) );
     die;
@@ -130,7 +195,7 @@ die("slides");
 $app->klein->respond('GET', HOME.'/interactive/[i:id]', function($req, $res, $svc, $app) use ($app) {
     try {
         $query = $app->db->prepare(
-            "select * from timelines where id=:id limit 1"
+            "select * from `timelines` where `id`=:id limit 1"
         );
         $query->execute(array(
             "id" => $req->id
