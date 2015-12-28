@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="{$home}/css/html5-reset.css" />
 <link rel="stylesheet" type="text/css" href="{$home}/css/main.css" />
 <script type="text/javascript" src="{$home}/js/jquery/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="{$home}/js/editor.js?rand={$smarty.now}"></script>
+<script type="text/javascript" src="{$home}/js/meta.js?rand={$smarty.now}"></script>
 <script type="text/javascript">
 var home = {$home|json_encode};
 </script>
