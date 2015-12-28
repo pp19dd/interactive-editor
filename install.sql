@@ -25,11 +25,13 @@ CREATE TABLE IF NOT EXISTS `meta` (
   `possible_values` text COLLATE utf8_unicode_ci NOT NULL,
   `default_value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=67 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=77 ;
 
 CREATE TABLE IF NOT EXISTS `slides` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `status` enum('published','deleted') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'published',
+  `num_order` int(10) unsigned NOT NULL DEFAULT '0',
+  `parent` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `series` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
