@@ -1,15 +1,73 @@
 
-function load_timeline(id) {
-    console.info( home + "/interactive/2/slides" );
+// ===========================================================================
+// generic 'meta' container, define rows here, field types, and so on
+// ===========================================================================
+function meta_container(selector) {
+    this.table = $(selector);
 
-    $.post(
-        home + "/interactive/" + parseInt(id) + "/slides",
-        {},
-        function(d) {
-            $("slides lower").html(d);
-        }
-    );
+    if( this.table.length !== 1 ) {
+        console.error( "meta.js: need a unique table as a constructor" );
+        return(false);
+    }
 
+    // head row describes how each tbody row should behave
+    // body is where newly created trs go
+    this.head = $("thead th", this.table);
+    this.body = $("tbody", this.table);
+
+    // describes types of td in a new/loaded row
+    this.fields = [];
+
+    // rows are loaded here when a new row is created
+    this.rows = [];
+
+    var that = this;
+    $.each(this.head, function(k,v) {
+        that.fields.push({
+            name: $(this).attr("data-name"),
+            type: $(this).attr("data-type"),
+            options: $(this).attr("data-options")
+        });
+    });
+
+    this.add_add_button();
+}
+
+meta_container.prototype.add_add_button = function() {
+    var that = this;
+    var a = $("<a class='add-field' href='#'>+ Add Field</a>");
+    a.click(function() {
+        that.add_row({ id: -1 });
+        return(false);
+    });
+    var p = $("<p />");
+    p.append(a);
+    that.table.after(p);
+}
+
+// data.id is required
+meta_container.prototype.add_row = function(data) {
+    var tr = $("<tr/>", {
+        "data-id": data.id,
+        "class": "meta_field"
+    });
+    tr.hide();
+    this.table.append(tr);
+
+    this.rows.push( new meta_field({
+        row: tr,
+        fields: this.fields,
+        data: data
+    }) );
+
+    tr.show("slide");
+}
+
+meta_container.prototype.load = function(data) {
+    var that = this;
+    $.each(data, function(k,v) {
+        that.add_row( v );
+    });
 }
 
 // ===========================================================================
@@ -17,7 +75,8 @@ function load_timeline(id) {
 // ===========================================================================
 function meta_field(init) {
     this.init = init;
-    this.parts = [];
+
+    this.cells = [];
     this.position = -1;
     this.is_deleted = false;
     this.create();
@@ -26,15 +85,15 @@ function meta_field(init) {
 meta_field.prototype.text_field = function(field) {
     var td = $("<td />");
     var input = $("<input />", {
-        name: field.label,
+        name: field.name,
         value: field.value
     });
     td.append(input);
-    this.parts.push(input);
+    this.cells.push(input);
     return(td);
 }
 
-meta_field.prototype.type_of_field_option = function(parm) {
+meta_field.prototype.field_option = function(parm) {
     var option = $("<option />", {
         value: parm.value,
         text: parm.value
@@ -46,45 +105,20 @@ meta_field.prototype.type_of_field_option = function(parm) {
     return(option);
 }
 
-meta_field.prototype.type_of_field = function(field) {
+meta_field.prototype.dropdown_field = function(field) {
     var td = $("<td />");
     var input = $("<select />", {
-        name: field.label
+        name: field.name
     });
 
-    var to_add = ["text", "textarea", "dropdown", "checkbox", "radio"];
-
+    var to_add = field.options.split(",");
     for( var i = 0; i < to_add.length; i++ ) {
-        input.append(
-            this.type_of_field_option({
-                parent_value: field.value, field, value: to_add[i]
-            })
-        );
+        input.append( this.field_option({
+            value: to_add[i],
+            parent_value: field.value
+        }));
     }
-
     td.append(input);
-    this.parts.push(input);
-    return(td);
-}
-
-meta_field.prototype.type_of_position = function(field) {
-    var td = $("<td />");
-    var input = $("<select />", {
-        name: field.label
-    });
-
-    var to_add = ["before", "after", "sidebar"];
-
-    for( var i = 0; i < to_add.length; i++ ) {
-        input.append(
-            this.type_of_field_option({
-                parent_value: field.value, field, value: to_add[i]
-            })
-        );
-    }
-
-    td.append(input);
-    this.parts.push(input);
     return(td);
 }
 
@@ -100,10 +134,10 @@ meta_field.prototype.get = function() {
     ret["order_num"] = -1;
     ret["is_deleted"] = this.is_deleted;
 
-    for( var i = 0; i < this.parts.length; i++ ) {
-        //console.info( this.parts[i] );
-        var k = $(this.parts[i]).attr("name");
-        var v = $(this.parts[i]).val();
+    for( var i = 0; i < this.cells.length; i++ ) {
+        //console.info( this.cells[i] );
+        var k = $(this.cells[i]).attr("name");
+        var v = $(this.cells[i]).val();
         ret[k] = v;
     }
     return( ret );
@@ -113,16 +147,17 @@ meta_field.prototype.remove_button = function() {
     var td = $("<td />");
     var a = $("<a href='#' class='remove-field' title='Mark for deletion'>-</a>");
     var that = this;
+
     a.click(function() {
-        if( that.tr.hasClass("to-be-deleted") ) {
-            that.tr.animate({ opacity: 1 }, 300, function() {
-                that.tr.removeClass("to-be-deleted");
+        if( that.init.row.hasClass("to-be-deleted") ) {
+            that.init.row.animate({ opacity: 1 }, 300, function() {
+                that.init.row.removeClass("to-be-deleted");
                 a.attr("title", "Mark for deletion");
                 that.is_deleted = false;
             });
         } else {
-            that.tr.animate({ opacity: 0.1 }, 300, function() {
-                that.tr.addClass("to-be-deleted");
+            that.init.row.animate({ opacity: 0.1 }, 300, function() {
+                that.init.row.addClass("to-be-deleted");
                 a.attr("title", "Unmark for deletion");
                 that.is_deleted = true;
             });
@@ -135,72 +170,29 @@ meta_field.prototype.remove_button = function() {
 }
 
 meta_field.prototype.create = function() {
-    var to_add = [
-        this.text_field({ label: "series", value: this.init.series }),
-        this.type_of_position({ label: "position", value: this.init.position }),
-        this.text_field({ label: "label", value: this.init.label }),
-        this.text_field({ label: "symbol", value: this.init.symbol }),
-        this.type_of_field({ label: "type", value: this.init.type }),
-        this.text_field({ label: "possible", value: this.init.possible_values }),
-        this.text_field({ label: "default", value: this.init.default_value }),
-        this.remove_button({ label: "default", value: this.init.default_value })
-    ];
-    var tr = $("<tr />", { "class": "meta_field" });
-    for( var k in to_add ) {
-        tr.append(to_add[k]);
-    }
-    this.tr = tr;
-    $("#timeline_meta").append(tr);
-}
+    var that = this;
+    $.each(this.init.fields, function(k,v) {
 
-// ===========================================================================
-// glue this to the add button / link
-// ===========================================================================
-function add_meta_field(options) {
-    options.container.push(
-        new meta_field({
-            id: -1,
-            status: "published",
-            position: "sidebar",
-            type: "text",
-            series: "",
-            label: "",
-            symbol: "",
-            possible_values: "",
-            default_value: ""
-        })
-    );
-}
-
-// ===========================================================================
-// glue this to the save config button / link
-// ===========================================================================
-function save_config(id, button) {
-    $(button).attr("disabled", true);
-
-    function get_meta() {
-        var ret = [];
-        for( var i = 0; i < meta_fields.length; i++ ) {
-            ret.push( meta_fields[i].get() );
+        var p = {
+            name: v.name,
+            value: that.init.data[v.name],
+            options: v.options
         }
-        return( ret );
-    }
 
-    $.ajax({
-        url: home + "/save/config/" + parseInt(id),
-        method: "post",
-        data: {
-            id: id,
-            title: $("input[name=title]").val(),
-            subtitle: $("input[name=subtitle]").val(),
-            template: $("input[name=template]").val(),
-            meta: get_meta()
-        },
-        dataType: "json",
-        success: function(d) {
-            $(button).attr("disabled", false);
-            window.location.href = home;
+        switch(v.type) {
+            case 'text':
+                that.init.row.append(that.text_field(p));
+            break;
+
+            case 'dropdown':
+                that.init.row.append(that.dropdown_field(p));
+            break;
+
+            default:
+                console.error( "Error: meta type " + v.type + " not supported");
+            break;
         }
     });
 
+    this.init.row.append(this.remove_button() );
 }

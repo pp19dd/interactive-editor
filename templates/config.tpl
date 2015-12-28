@@ -5,6 +5,7 @@
 {/block}
 
 {block name="head"}
+<script type="text/javascript" src="{$home}/js/config.js?rand={$smarty.now}"></script>
 <script type="text/javascript">
 var meta = {$meta|json_encode};
 </script>
@@ -12,12 +13,16 @@ var meta = {$meta|json_encode};
 
 {block name="foot"}
 <script type="text/javascript">
-var meta_fields = [];
+
+var slide_fields = new meta_container("#timeline_meta");
+slide_fields.load(meta);
+
+/*var meta_fields = [];
 for( var i = 0; i < meta.length; i++ ) {
     meta_fields.push(
         new meta_field(meta[i])
     );
-}
+}*/
 
 $("#add_field").click(function() {
     add_meta_field( { container: meta_fields } );
@@ -25,7 +30,7 @@ $("#add_field").click(function() {
 });
 
 $("#save_timeline_config").click(function() {
-    save_config( {$timeline->id}, this );
+    save_config( {$timeline->id}, this, slide_fields );
     return(false);
 });
 
@@ -103,20 +108,18 @@ $("#save_timeline_config").click(function() {
 <table class="timeline_meta" id="timeline_meta">
     <thead>
         <tr>
-            <th>Series</th>
-            <th>Position</th>
-            <th>Label</th>
-            <th>Template Symbol</th>
-            <th>Type</th>
-            <th>Possible Values</th>
-            <th>Default Value</th>
+            <th data-name="series"   data-type="text">Series</th>
+            <th data-name="position" data-type="dropdown" data-options="before,after,sidebar" >Position</th>
+            <th data-name="label"    data-type="text">Label</th>
+            <th data-name="symbol"   data-type="text">Template Symbol</th>
+            <th data-name="type"     data-type="dropdown" data-options="text,textarea,dropdown,checkbox,radio">Type</th>
+            <th data-name="possible" data-type="text">Possible Values</th>
+            <th data-name="default"  data-type="text">Default Value</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
-
-<p><a id="add_field" class="add-field" href="">+ Add Field</a></p>
 
 <pad>
     <notes>
