@@ -152,13 +152,28 @@ $app->klein->respond('POST', HOME.'/save/config/[i:id]', function($req, $res, $s
     }
 
     foreach( $req->meta as $count => $field ) {
+
+        // validate presence of all required $field keys
+        $required = array(
+            "series", "position", "label", "symbol",
+            "type", "possible_values", "default_value"
+        );
+
+        // this will allow additional keys, but not any to be missing
+        $missing = array_diff($required, array_keys($field));
+        if( !empty($missing) ) {
+            die( "ERROR: cells missing in meta field" );
+        }
+
+        // field deleted, so ... don't add it back up
         if( $field["is_deleted"] == "true" ) continue;
 
         try {
             $query = $app->db->prepare(
                 "insert into meta (timeline_id, order_num, series, position, label, " .
                 " symbol, type, possible_values, default_value) values (" .
-                ":id, :order, :series, :position, :label, :symbol, :type, :possible, :default)"
+                ":id, :order, :series, :position, :label, :symbol, :type, " .
+                ":possible_values, :default_value)"
             );
             $query->execute(array(
                 "id" => $req->id,
@@ -168,11 +183,11 @@ $app->klein->respond('POST', HOME.'/save/config/[i:id]', function($req, $res, $s
                 "label" => $field["label"],
                 "symbol" => $field["symbol"],
                 "type" => $field["type"],
-                "possible" => $field["possible"],
-                "default" => $field["default"]
+                "possible_values" => $field["possible_values"],
+                "default_value" => $field["default_value"]
             ));
         } catch( Exception $e ) {
-            die( "ERROR: unable to delete meta fields" );
+            die( "ERROR: unable to add meta fields" );
         }
     }
 

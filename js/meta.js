@@ -70,6 +70,15 @@ meta_container.prototype.load = function(data) {
     });
 }
 
+meta_container.prototype.get = function() {
+    var ret = [];
+
+    for( var i = 0; i < this.rows.length; i++ ) {
+        ret.push( this.rows[i].get() );
+    }
+    return( ret );
+}
+
 // ===========================================================================
 // parts of the config interface
 // ===========================================================================
@@ -77,7 +86,6 @@ function meta_field(init) {
     this.init = init;
 
     this.cells = [];
-    this.position = -1;
     this.is_deleted = false;
     this.create();
 }
@@ -119,6 +127,7 @@ meta_field.prototype.dropdown_field = function(field) {
         }));
     }
     td.append(input);
+    this.cells.push(input);
     return(td);
 }
 
@@ -126,16 +135,11 @@ meta_field.prototype.dropdown_field = function(field) {
 meta_field.prototype.get = function() {
     var ret = {};
 
-    // hmm, need a ... field manager. taking a shortcut instead!
-    // never mind, fail
-    // this.position = $("tr.meta_field").length;
-
-    ret["meta_id"] = this.init.id;
+    ret["meta_id"] = this.init.data.id;
     ret["order_num"] = -1;
     ret["is_deleted"] = this.is_deleted;
 
     for( var i = 0; i < this.cells.length; i++ ) {
-        //console.info( this.cells[i] );
         var k = $(this.cells[i]).attr("name");
         var v = $(this.cells[i]).val();
         ret[k] = v;
