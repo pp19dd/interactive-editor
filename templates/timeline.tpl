@@ -1,11 +1,13 @@
 {extends file="template.tpl"}
 
 {block name="title"}
-<title>Interactives</title>
+<title>ie #{$timeline->id}: {$timeline->title}</title>
 {/block}
 
 {block name="head"}
+<script type="text/javascript" src="{$home}/js/timeline.js?rand={$smarty.now}"></script>
 <script type="text/javascript">
+timeline = new ieTimeline({ id: {$timeline->id} });
 </script>
 {/block}
 

@@ -2,15 +2,31 @@
 // defines everything needed on timeline edit screen
 // ===========================================================================
 
-function load_timeline(id) {
-    console.info( home + "/interactive/2/slides" );
+function ieTimeline(init) {
+    this.init = init;
+    this.id = init.id;
 
+    this.load();
+}
+
+ieTimeline.prototype.load = function() {
     $.post(
-        home + "/interactive/" + parseInt(id) + "/slides",
+        home + "/interactive/" + parseInt(this.id) + "/slides",
         {},
         function(d) {
-            $("slides lower").html(d);
+            $("#slides_lower").html(d);
         }
     );
+}
 
+ieTimeline.prototype.loadSlide = function(slide_id) {
+    $.ajax({
+        url: home + "/interactive/" + parseInt(this.id) + "/slide/" + slide_id,
+        method: "post",
+        data: {},
+        dataType: "json",
+        success: function(d) {
+            $("#editor_lower").html(d.content);
+        }
+    });
 }
