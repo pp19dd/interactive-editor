@@ -13,6 +13,9 @@ timeline = new ieTimeline({ id: {$timeline->id} });
 
 {block name="foot"}
 <script type="text/javascript">
+$("#action-add-slide").click(function() {
+    timeline.addSlide();
+});
 </script>
 {/block}
 
@@ -22,9 +25,9 @@ timeline = new ieTimeline({ id: {$timeline->id} });
         <h1>{$timeline->title}</h1>
         <h2>{$timeline->subtitle}</h2>
     </interactive>
-    <button>add slide</button>
-    <button>preview</button>
-    <button>publish</button>
+    <button id="action-add-slide">add slide</button>
+    <button id="action-preview">preview</button>
+    <button id="action-publish">publish</button>
 </upper>
 <lower id="slides_lower">
 {*for $x = 1 to 75}

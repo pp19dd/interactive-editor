@@ -19,6 +19,18 @@ ieTimeline.prototype.load = function() {
     );
 }
 
+ieTimeline.prototype.addSlide = function() {
+    $.ajax({
+        url: home + "/interactive/" + parseInt(this.id) + "/slide/new",
+        method: "post",
+        data: {},
+        dataType: "json",
+        success: function(d) {
+            $("#editor_lower").html(d.content);
+        }
+    });
+}
+
 ieTimeline.prototype.loadSlide = function(slide_id) {
     $.ajax({
         url: home + "/interactive/" + parseInt(this.id) + "/slide/" + slide_id,
