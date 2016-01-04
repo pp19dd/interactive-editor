@@ -6,17 +6,19 @@ function ieTimeline(init) {
     this.init = init;
     this.id = init.id;
 
-    this.load();
+    this.loadSlides();
 }
 
-ieTimeline.prototype.load = function() {
-    $.post(
-        home + "/interactive/" + parseInt(this.id) + "/slides",
-        {},
-        function(d) {
+ieTimeline.prototype.loadSlides = function() {
+    $.ajax({
+        url: home + "/interactive/" + parseInt(this.id) + "/slides",
+        method: "post",
+        data: {},
+        dataType: "html",
+        success: function(d) {
             $("#slides_lower").html(d);
         }
-    );
+    });
 }
 
 ieTimeline.prototype.addSlide = function() {
@@ -24,9 +26,9 @@ ieTimeline.prototype.addSlide = function() {
         url: home + "/interactive/" + parseInt(this.id) + "/slide/new",
         method: "post",
         data: {},
-        dataType: "json",
+        dataType: "html",
         success: function(d) {
-            $("#editor_lower").html(d.content);
+            $("#slides_lower").html(d);
         }
     });
 }

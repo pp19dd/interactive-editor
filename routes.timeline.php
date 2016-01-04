@@ -3,22 +3,30 @@ if( !defined("APP_RUNNING") ) {
     die( "ERROR 201" );
 }
 
-$app->klein->respond('POST', HOME.'/interactive/[i:id]/slides', function($req, $res, $svc, $app) use ($app) {
+function get_slides($timeline_id, $req, $res, $svc, $app) {
     try {
         $query = $app->db->prepare(
-            "select * from `slides` where `parent`=:id order by num_order,id"
+            "select * from `slides` where `parent`=:id and status=:status order by num_order,id"
         );
         $query->execute(array(
-            "id" => $req->id
+            "id" => $timeline_id,
+            "status" => "published"
         ));
         $slides = $query->fetchAll(\PDO::FETCH_OBJ);
     } catch( Exception $e ) {
         die( "ERROR: unable to query slides" );
     }
 
+    return($slides);
+}
+
+$app->klein->respond('POST', HOME.'/interactive/[i:id_parent]/slides', function($req, $res, $svc, $app) use ($app) {
+    $slides = get_slides($req->id_parent, $req, $res, $svc, $app );
+
     $app->smarty->assign( "home", URL );
     $app->smarty->assign( "slides", $slides );
     $app->smarty->assign( "page", "slides" );
+
     return( $app->smarty->fetch("slides.tpl") );
 });
 
@@ -36,25 +44,14 @@ $app->klein->respond('POST', HOME.'/interactive/[i:id_parent]/slide/new', functi
         die( "ERROR: unable to insert slide" . $e);
     }
 
-    try {
-        $query = $app->db->prepare(
-            "select * from `slides` where `parent`=:id_parent and id=:id limit 1"
-        );
-        $query->execute(array(
-            "id_parent" => $req->id_parent,
-            "id" => $id
-        ));
-        $slide = $query->fetch(\PDO::FETCH_OBJ);
-    } catch( Exception $e ) {
-        die( "ERROR: unable to query slide" );
-    }
+    $slides = get_slides($req->id_parent, $req, $res, $svc, $app );
 
     $app->smarty->assign( "home", URL );
-    $app->smarty->assign( "slide", $slide );
-    $app->smarty->assign( "page", "slide" );
+    $app->smarty->assign( "slides", $slides );
+    $app->smarty->assign( "page", "slides" );
 
-    return( json_encode($slide) );
-    #return( $app->smarty->fetch("slide.tpl") );
+    return( $app->smarty->fetch("slides.tpl") );
+    return( json_encode($slides) );
 });
 
 $app->klein->respond('POST', HOME.'/interactive/[i:id_parent]/slide/[i:id]', function($req, $res, $svc, $app) use ($app) {
