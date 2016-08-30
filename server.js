@@ -1,8 +1,16 @@
-var http = require("http");
-var faye = require("faye");
+var app = require("express")();
+var http = require("http").Server(app);
+var io = require("socket.io")(http);
 
-var server = http.CreateServer();
-var bayeux = faye.NodeAdapter({ mount: "/" });
+app.get("/", function(req, res) {
+    res.send( "hi..." );
+});
 
-bayeux.attach( server );
-server.listen( 8000 );
+io.on("connection", function(socket) {
+    console.log( "user connected: " + socket.client.id);
+    socket.emit( "join", socket.client.id );
+})
+
+http.listen(3000, function() {
+    console.log( "listening on *.3000" );
+});
