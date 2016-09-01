@@ -1,0 +1,25 @@
+{
+  "name": "interactive-editor",
+  "version": "1.0.0",
+  "description": "Concurrent content / programming / design editor for news interactives.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.10.2",
+    "socket.io": "^1.4.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pp19dd/interactive-editor.git"
+  },
+  "author": "pp19dd@gmail.com",
+  "license": "CC0",
+  "bugs": {
+    "url": "https://github.com/pp19dd/interactive-editor/issues"
+  },
+  "homepage": "https://github.com/pp19dd/interactive-editor#readme"
+}
