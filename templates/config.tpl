@@ -28,9 +28,7 @@ $("#save_timeline_config").click(function() {
 {block name="slides"}
 <upper>
     <pad>
-        <h1>
-            &nbsp;
-        </h1>
+        <h1>Config</h1>
     </pad>
 </upper>
 <lower>

@@ -12,10 +12,18 @@
 <script src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 var home = {$home|json_encode};
-var socket = io.connect("http://localhost:3000");
+var self = "";
+$(document).ready(function() {
+  var socket = io.connect("http://localhost:3000");
+  socket.on("connect", function(msg) {
+    self = socket.id;
+    $("slides h1").html(self);
+  });
 
-socket.on("emit", function(msg) {
-    console.info( msg );
+  socket.on("joined", function(msg) {
+    console.info( "i am " + self + " and brother joined: " + msg );
+
+  });
 });
 </script>
 {block name="head"}
